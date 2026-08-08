@@ -1,0 +1,166 @@
+/* ══════════════════════════════════════════════════════════════
+   Reset & Base
+   ══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--on-background);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Subtle paper grain */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.022'/%3E%3C/svg%3E");
+}
+
+img  { display: block; max-width: 100%; }
+a    { color: inherit; }
+button { font-family: inherit; }
+
+/* ── App shell ───────────────────────────────────────────────── */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* ── Utilities ───────────────────────────────────────────────── */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+.modal-backdrop {
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Global keyframes
+   ══════════════════════════════════════════════════════════════ */
+
+/* Generic reveal */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fade-down {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Divider expand */
+@keyframes divider-expand {
+  from { transform: scaleX(0); opacity: 0; }
+  to   { transform: scaleX(1); opacity: 1; }
+}
+
+/* Section heading */
+@keyframes heading-fade-up {
+  from { opacity: 0; transform: translateY(14px) skewY(0.5deg); }
+  to   { opacity: 1; transform: translateY(0)    skewY(0deg); }
+}
+
+@keyframes sub-fade {
+  from { opacity: 0; transform: translateY(7px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Shimmer — for skeleton / image-loading states */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+/* Pulse glow */
+@keyframes pulse-glow {
+  0%,100% { box-shadow: var(--glow-card); }
+  50%     { box-shadow: var(--glow-card-hover); }
+}
+
+/* Soft bob (used by carousel hint arrow) */
+@keyframes bob {
+  0%,100% { transform: translateX(-50%) translateY(0); }
+  50%     { transform: translateX(-50%) translateY(4px); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Section Heading — serif italic staggered reveal
+   ══════════════════════════════════════════════════════════════ */
+.section-heading {
+  text-align: center;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.section-heading__title {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(24px, 3.6vw, 42px);
+  letter-spacing: 0.018em;
+  color: var(--on-surface);
+  line-height: 1;
+  margin-bottom: 0.6rem;
+
+  opacity: 0;
+  animation: heading-fade-up var(--duration-slow) var(--ease-out-expo) 0.04s forwards;
+}
+
+.section-heading__divider {
+  width: 1.8rem;
+  height: 1px;
+  background: var(--outline-variant);
+  margin: 0 auto 0.65rem;
+  transform-origin: center;
+
+  opacity: 0;
+  animation: divider-expand 0.42s var(--ease-out-expo) 0.32s forwards;
+}
+
+.section-heading__sub {
+  font-family: var(--font-body);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.11em;
+  color: var(--on-surface-variant);
+  text-transform: lowercase;
+
+  opacity: 0;
+  animation: sub-fade 0.42s ease 0.48s forwards;
+}
+
+/* ── Shimmer utility (image placeholders) ────────────────────── */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--surface-container-low) 0%,
+    var(--surface-container-highest) 50%,
+    var(--surface-container-low) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease infinite;
+}

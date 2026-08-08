@@ -1,0 +1,598 @@
+/* ══════════════════════════════════════════════════════════════
+   Gallery — carousel  (focused, clean)
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Keyframes ───────────────────────────────────────────────── */
+@keyframes loopThunder {
+  0%  { stroke-dashoffset: 600; }
+  to  { stroke-dashoffset: 0; }
+}
+
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes title-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bar-in {
+  from { transform: scaleX(0); opacity: 0; }
+  to   { transform: scaleX(1); opacity: 1; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Main layout
+   ══════════════════════════════════════════════════════════════ */
+.carousel-main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-top: var(--navbar-h);
+  overflow: hidden;
+  position: relative;
+  user-select: none;
+  animation: page-in 0.7s var(--ease-out-expo) both;
+  cursor: none;
+}
+
+/* ── Ambient glow — static, no pulse ────────────────────────── */
+.carousel-ambient {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(110px);
+  width: 480px;
+  height: 480px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+  opacity: 0.38;
+}
+
+/* ── Custom cursor ───────────────────────────────────────────── */
+.carousel-cursor {
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+}
+
+.carousel-cursor__dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--on-surface);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s var(--ease-spring), height 0.3s var(--ease-spring);
+}
+
+.carousel-cursor__ring {
+  position: absolute;
+  top: 0; left: 0;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--on-surface);
+  transform: translate(-50%, -50%);
+  transition:
+    width   0.4s var(--ease-spring),
+    height  0.4s var(--ease-spring),
+    opacity 0.3s ease;
+  opacity: 0.5;
+}
+
+.carousel-cursor.is-hover .carousel-cursor__dot { width: 12px; height: 12px; }
+.carousel-cursor.is-hover .carousel-cursor__ring { width: 56px; height: 56px; opacity: 0.2; }
+.carousel-cursor.is-drag  .carousel-cursor__ring { width: 22px; height: 22px; opacity: 0.8; }
+
+/* ══════════════════════════════════════════════════════════════
+   Work Names — heading
+   ══════════════════════════════════════════════════════════════ */
+.carousel-heading-wrap {
+  flex-shrink: 0;
+  padding: 1.5rem 0 1rem;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.work-names {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 12px 28px;
+  color: var(--on-surface);
+  pointer-events: none;
+  user-select: none;
+  position: relative;
+}
+
+.work-names__title-2 {
+  position: absolute;
+  top: 14px; left: 22px;
+  z-index: -1;
+  opacity: 0.12;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(2rem, 4.5vw, 3.4rem);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  text-transform: lowercase;
+  color: var(--accent);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.work-names__title {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(2rem, 4.5vw, 3.4rem);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  text-transform: lowercase;
+  color: var(--on-surface);
+  white-space: nowrap;
+  display: flex;
+  gap: 0;
+  overflow: hidden;
+  padding-bottom: 0.06em;
+}
+
+.work-names__char {
+  display: inline-block;
+  opacity: 1;
+}
+
+.work-names__bar {
+  height: 1px;
+  width: calc(100% - 20px);
+  position: relative;
+  margin: 8px 0 0;
+  background: color-mix(in srgb, var(--outline-variant) 60%, transparent);
+  transform-origin: center;
+  opacity: 0;
+  transform: scaleX(0);
+  animation: bar-in 0.5s var(--ease-out-expo) 0.2s forwards;
+}
+
+.work-names__bar svg {
+  width: 60%;
+  height: 6px;
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  opacity: 0.8;
+  overflow: visible;
+}
+
+.work-names__bar svg path {
+  stroke-dasharray: 300;
+  stroke-dashoffset: 600;
+  animation: loopThunder 1.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+  animation-delay: 0.3s;
+}
+
+.work-names__type {
+  font-family: var(--font-body);
+  font-size: clamp(0.68rem, 1vw, 0.82rem);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--outline);
+  margin: 8px 0 0;
+  opacity: 0;
+  animation: title-in 0.4s ease 0.3s forwards;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Scene
+   ══════════════════════════════════════════════════════════════ */
+.carousel-scene {
+  flex-grow: 1;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  cursor: none;
+  min-height: 420px;
+  z-index: 1;
+}
+
+.carousel-scene::before,
+.carousel-scene::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 22vw;
+  z-index: 10;
+  pointer-events: none;
+}
+.carousel-scene::before {
+  left: 0;
+  background: linear-gradient(
+    to right,
+    var(--background) 0%,
+    color-mix(in srgb, var(--background) 80%, transparent) 40%,
+    transparent 100%
+  );
+}
+.carousel-scene::after {
+  right: 0;
+  background: linear-gradient(
+    to left,
+    var(--background) 0%,
+    color-mix(in srgb, var(--background) 80%, transparent) 40%,
+    transparent 100%
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Card wrapper & scroll-item
+   ══════════════════════════════════════════════════════════════ */
+.carousel-card-wrap {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.carousel-card-wrap.active {
+  pointer-events: auto;
+  z-index: 5;
+}
+
+.scroll-item {
+  width: 52vw;
+  max-width: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: none;
+  pointer-events: none;
+  opacity: 0.12;
+  filter: blur(3px) saturate(0.15) brightness(0.70);
+  transform: scale(0.72);
+  transform-origin: center center;
+  /* NO transform transition — scale snaps instantly, no bounce */
+  transition:
+    opacity 0.4s var(--ease-out-expo),
+    filter  0.4s var(--ease-out-expo);
+}
+
+.scroll-item.feature { width: 60vw; max-width: 300px; }
+
+.scroll-item.active {
+  opacity: 1;
+  filter: none;
+  transform: scale(1.12);
+  cursor: none;
+  pointer-events: auto;
+  transition:
+    opacity 0.4s var(--ease-out-expo),
+    filter  0.4s var(--ease-out-expo);
+}
+
+/* Tilt layer — SEPARATE from scale, driven by JS only */
+.scroll-item__tilt {
+  width: 100%;
+  transform: perspective(900px)
+    rotateX(var(--tilt-x, 0deg))
+    rotateY(var(--tilt-y, 0deg));
+  /* no transition — JS drives it frame by frame */
+}
+
+/* Spring back after mouse leave */
+.scroll-item__tilt.snap-back {
+  transition: transform 0.5s var(--ease-spring);
+}
+
+/* Freeze tilt during carousel snap */
+.carousel-scene.is-transitioning .scroll-item__tilt {
+  transition: transform 0.3s ease;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+}
+
+/* Index badge */
+.scroll-item__index {
+  position: absolute;
+  top: -1.4rem; left: 0;
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--outline);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.4s ease, transform 0.4s var(--ease-out-expo);
+}
+
+.scroll-item.active .scroll-item__index {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Float wrap — no float animation, wave is the movement */
+.poster-float-wrap {
+  width: 100%;
+}
+
+/* Poster container */
+.poster-image-container {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 8px;
+  position: relative;
+  box-shadow: var(--shadow-md);
+  transition: box-shadow var(--duration-slow) var(--ease-out-expo);
+}
+
+@supports not (aspect-ratio: 3 / 4) {
+  .poster-image-container::before { content: ''; display: block; padding-top: 133.33%; }
+  .poster-image-container .poster-image { position: absolute; inset: 0; }
+}
+
+.scroll-item.active .poster-image-container {
+  box-shadow:
+    0 32px 80px rgba(0, 0, 0, 0.28),
+    0 12px 32px rgba(0, 0, 0, 0.18),
+    0  4px 12px rgba(0, 0, 0, 0.10);
+}
+
+/* Bottom gradient */
+.poster-image-container::after {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: 8px;
+  background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.28) 100%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.scroll-item.active .poster-image-container::after { opacity: 1; }
+
+/* Poster image */
+.poster-image {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+  pointer-events: none;
+  position: relative;
+  z-index: 1;
+}
+
+/* Metadata */
+.poster-metadata {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0.9rem;
+  gap: 0.22rem;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.4s ease 0.1s, transform 0.4s var(--ease-out-expo) 0.1s;
+}
+
+.scroll-item.active .poster-metadata {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.poster-metadata__title {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  color: var(--on-surface);
+  line-height: 1.2;
+}
+
+.poster-metadata__sub {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--outline);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Wave canvas overlay
+   ══════════════════════════════════════════════════════════════ */
+.wave-canvas {
+  position: absolute; inset: 0;
+  width: 100% !important; height: 100% !important;
+  z-index: 2;
+  border-radius: 8px;
+  display: block;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.wave-canvas.wave-canvas--loaded { opacity: 1; }
+
+.poster-image-container:has(.wave-canvas--loaded) .poster-image {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.poster-image-container:not(.wave-active) .poster-image {
+  opacity: 1 !important;
+  transition: opacity 0.3s ease;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Title FLIP morph layers
+   ══════════════════════════════════════════════════════════════ */
+.morph-title-root { position: relative; }
+
+.morph-title-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.morph-layer { margin: 0; }
+
+@keyframes morph-enter {
+  from { opacity: 0; transform: translateX(var(--slide-in, 0.4em)); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes morph-exit {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(calc(var(--slide-out, -0.4em) * -1)); }
+}
+
+.morph-layer--enter {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: max-content;
+  pointer-events: none;
+  animation: morph-enter 0.42s var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1)) forwards;
+}
+
+.morph-layer--enter .work-names__char { opacity: 1; animation: none; }
+
+.morph-layer--exit {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: max-content;
+  pointer-events: none;
+  animation: morph-exit 0.28s var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1)) forwards;
+}
+
+.morph-layer--exit .work-names__char { opacity: 1; animation: none; }
+
+.morph-layer--active { position: relative; }
+.morph-layer--active .work-names__char { opacity: 1; animation: none; }
+
+/* ══════════════════════════════════════════════════════════════
+   Dot indicator + Magnetic
+   ══════════════════════════════════════════════════════════════ */
+.carousel-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 0 1.5rem;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.carousel-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--outline-variant);
+  border: none; padding: 0;
+  flex-shrink: 0;
+  cursor: none;
+  will-change: transform;
+  transition:
+    background    0.3s ease,
+    width         0.38s var(--ease-spring),
+    border-radius 0.38s ease,
+    box-shadow    0.3s ease;
+}
+
+.carousel-dot.active {
+  background: var(--on-surface);
+  width: 22px;
+  border-radius: 3px;
+}
+
+.carousel-dot.mag-near {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--on-surface) 18%, transparent);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Scroll hint
+   ══════════════════════════════════════════════════════════════ */
+.carousel-hint {
+  position: absolute;
+  bottom: 1.25rem; left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--outline);
+  pointer-events: none;
+  z-index: 20;
+  opacity: 0;
+  animation: title-in 0.5s ease 1.4s forwards;
+}
+
+.carousel-hint__line {
+  width: 1.25rem; height: 1px;
+  background: var(--outline-variant);
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Responsive
+   ══════════════════════════════════════════════════════════════ */
+@media (min-width: 480px) {
+  .scroll-item         { width: 220px; max-width: 220px; }
+  .scroll-item.feature { width: 260px; max-width: 260px; }
+}
+@media (min-width: 768px) {
+  .scroll-item         { width: 290px; max-width: 290px; }
+  .scroll-item.feature { width: 350px; max-width: 350px; }
+}
+@media (min-width: 1024px) {
+  .scroll-item         { width: 315px; max-width: 315px; }
+  .scroll-item.feature { width: 385px; max-width: 385px; }
+  .carousel-scene      { min-height: 520px; }
+}
+@media (min-width: 1440px) {
+  .scroll-item         { width: 345px; max-width: 345px; }
+  .scroll-item.feature { width: 425px; max-width: 425px; }
+}
+
+@media (max-width: 767px) {
+  .scroll-item        { transform: scale(0.80); }
+  .scroll-item.active { transform: scale(1.0); }
+  .carousel-scene::before,
+  .carousel-scene::after { width: 8vw; }
+  .carousel-heading-wrap { padding: 1rem 0 0.5rem; }
+  .carousel-main   { cursor: auto; }
+  .carousel-scene  { cursor: auto; }
+  .carousel-cursor { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel-main { animation: none; }
+  .scroll-item { transition: opacity 0.2s ease; filter: none !important; }
+  .wave-canvas { display: none !important; }
+  .poster-image-container:has(.wave-canvas--loaded) .poster-image { opacity: 1 !important; }
+  .morph-layer--enter,
+  .morph-layer--exit { animation: none !important; opacity: 1 !important; }
+}

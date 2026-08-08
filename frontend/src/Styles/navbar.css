@@ -1,0 +1,112 @@
+/* ══════════════════════════════════════════════════════════════
+   Navbar
+   ══════════════════════════════════════════════════════════════ */
+
+/* Entrance — slides down from above on first load */
+@keyframes nav-enter {
+  from { opacity: 0; transform: translateY(-100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+header.site-header {
+  height: var(--navbar-h);
+  padding: 0 1.5rem;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  /* Fallback */
+  background: rgba(250, 248, 245, 0.95);
+
+  /* Glassmorphism */
+  @supports (backdrop-filter: blur(1px)) {
+    background: rgba(250, 248, 245, 0.68);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
+
+  border-bottom: 1px solid transparent;
+
+  transition:
+    background      var(--duration-base) var(--ease-smooth),
+    border-color    var(--duration-base) var(--ease-smooth),
+    box-shadow      var(--duration-base) var(--ease-smooth);
+
+  /* Enter animation */
+  animation: nav-enter 0.7s var(--ease-out-expo) both;
+}
+
+header.site-header.scrolled {
+  background: rgba(250, 248, 245, 0.94);
+  border-bottom-color: rgba(0, 0, 0, 0.07);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04), var(--shadow-sm);
+
+  @supports (backdrop-filter: blur(1px)) {
+    background: rgba(250, 248, 245, 0.88);
+  }
+}
+
+@media (min-width: 640px) {
+  header.site-header { padding: 0 2.5rem; }
+}
+
+/* ── Brand ───────────────────────────────────────────────────── */
+.nav-brand {
+  font-family: var(--font-display);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--on-surface);
+  text-decoration: none;
+  transition:
+    opacity  var(--duration-fast) ease,
+    color    var(--duration-fast) ease;
+}
+
+.nav-brand:hover { opacity: 0.5; }
+
+/* ── Nav links ───────────────────────────────────────────────── */
+.nav-link {
+  position: relative;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+  text-decoration: none;
+  padding-bottom: 3px;
+  transition: color var(--duration-fast) ease;
+}
+
+/* Underline — grows from left on hover, right on leave */
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--on-surface);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.32s var(--ease-out-expo);
+}
+
+.nav-link:hover        { color: var(--on-surface); }
+.nav-link.active       { color: var(--on-surface); }
+
+.nav-link.active::after,
+.nav-link:hover::after { transform: scaleX(1); }
+
+/* Shrink back from right when leaving (not active) */
+.nav-link:not(.active)::after {
+  transform-origin: right center;
+}
+.nav-link:not(.active):hover::after {
+  transform-origin: left center;
+}
