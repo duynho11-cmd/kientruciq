@@ -1,5 +1,5 @@
 import { Search, SlidersHorizontal, X } from 'lucide-react'
-import '../../Styles/project-catalog.css'
+import '../../styles/project-catalog.css'
 
 export default function ProjectCatalogControls({ catalog, total }) {
   return (
