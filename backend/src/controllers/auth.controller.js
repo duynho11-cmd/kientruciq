@@ -18,10 +18,13 @@ function publicUser(user) {
 }
 
 function cookieOptions(remember = false) {
+  const isProd = process.env.NODE_ENV === 'production'
   return {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure: isProd,
+    // 'none' cho phép gửi cookie cross-domain (frontend và backend khác origin trên Vercel)
+    // 'lax' dùng khi dev local (SameSite=None bắt buộc phải có Secure=true)
+    sameSite: isProd ? 'none' : 'lax',
     path: '/',
     ...(remember ? { maxAge: 7 * 24 * 60 * 60 * 1000 } : {}),
   }

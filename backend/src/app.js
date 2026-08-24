@@ -2,12 +2,14 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import express from 'express'
 import helmet from 'helmet'
-import path from 'node:path'
 import authRoutes from './routes/auth.routes.js'
 import projectRoutes from './routes/project.routes.js'
 import uploadRoutes from './routes/upload.routes.js'
 
 const app = express()
+
+// Tin tưởng proxy của Vercel để lấy IP thực cho rate-limit
+app.set('trust proxy', 1)
 
 app.disable('x-powered-by')
 app.use(helmet())
@@ -22,11 +24,6 @@ app.get('/api/health', (_req, res) => res.json({ status: 'ok' }))
 app.use('/api/auth', authRoutes)
 app.use('/api/projects', projectRoutes)
 app.use('/api/uploads', uploadRoutes)
-app.use('/uploads', express.static(path.resolve('uploads'), {
-  dotfiles: 'deny',
-  fallthrough: false,
-  maxAge: '7d',
-}))
 
 app.use((_req, res) => res.status(404).json({ message: 'Không tìm thấy API.' }))
 

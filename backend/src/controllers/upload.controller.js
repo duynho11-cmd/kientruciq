@@ -1,12 +1,24 @@
 import crypto from 'node:crypto'
-import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
 import { fileTypeFromBuffer } from 'file-type'
 import sharp from 'sharp'
 import cloudinary from '../config/cloudinary.js'
 
 const allowedTypes = new Set(['image/jpeg', 'image/png', 'image/webp'])
-const uploadRoot = path.resolve('uploads')
+
+/**
+ * Upload một buffer lên Cloudinary và trả về kết quả.
+ * @param {Buffer} buffer
+ * @param {object} options - options truyền vào cloudinary upload_stream
+ */
+function uploadBufferToCloudinary(buffer, options = {}) {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(options, (error, result) =>
+      error ? reject(error) : resolve(result),
+    )
+    stream.end(buffer)
+  })
+}
 
 export async function uploadProjectImage(req, res) {
   if (!req.file) return res.status(400).json({ message: 'Vui lòng chọn ảnh.' })
@@ -16,29 +28,49 @@ export async function uploadProjectImage(req, res) {
     return res.status(415).json({ message: 'Chỉ chấp nhận ảnh JPEG, PNG hoặc WebP hợp lệ.' })
   }
 
-  await mkdir(path.join(uploadRoot, 'projects', 'thumbs'), { recursive: true })
-  const id = crypto.randomBytes(16).toString('hex')
-  const filename = `${id}.webp`
-  const imagePath = path.join(uploadRoot, 'projects', filename)
-  const thumbPath = path.join(uploadRoot, 'projects', 'thumbs', filename)
+  if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+    return res.status(503).json({ message: 'Cloudinary chưa được cấu hình trên máy chủ.' })
+  }
 
+  const id = crypto.randomBytes(16).toString('hex')
   const image = sharp(req.file.buffer, { failOn: 'error', limitInputPixels: 40_000_000 }).rotate()
   const metadata = await image.metadata()
 
-  await image.clone()
-    .resize({ width: 2400, height: 2400, fit: 'inside', withoutEnlargement: true })
-    .webp({ quality: 84 })
-    .toFile(imagePath)
+  // Xử lý ảnh full và thumbnail song song bằng sharp rồi upload lên Cloudinary
+  const [fullBuffer, thumbBuffer] = await Promise.all([
+    image.clone()
+      .resize({ width: 2400, height: 2400, fit: 'inside', withoutEnlargement: true })
+      .webp({ quality: 84 })
+      .toBuffer(),
+    image.clone()
+      .resize({ width: 600, height: 600, fit: 'inside', withoutEnlargement: true })
+      .webp({ quality: 78 })
+      .toBuffer(),
+  ])
 
-  await image.clone()
-    .resize({ width: 600, height: 600, fit: 'inside', withoutEnlargement: true })
-    .webp({ quality: 78 })
-    .toFile(thumbPath)
+  const [fullResult, thumbResult] = await Promise.all([
+    uploadBufferToCloudinary(fullBuffer, {
+      resource_type: 'image',
+      folder: 'projects/images',
+      public_id: id,
+      format: 'webp',
+      use_filename: false,
+      overwrite: false,
+    }),
+    uploadBufferToCloudinary(thumbBuffer, {
+      resource_type: 'image',
+      folder: 'projects/images/thumbs',
+      public_id: id,
+      format: 'webp',
+      use_filename: false,
+      overwrite: false,
+    }),
+  ])
 
   res.status(201).json({
     image: {
-      url: `/uploads/projects/${filename}`,
-      thumbnailUrl: `/uploads/projects/thumbs/${filename}`,
+      url: fullResult.secure_url,
+      thumbnailUrl: thumbResult.secure_url,
       publicId: id,
       width: metadata.width,
       height: metadata.height,
