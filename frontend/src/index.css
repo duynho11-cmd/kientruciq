@@ -10,4 +10,8 @@
 @import "./styles/navbar.css";
 @import "./styles/gallery.css";
 @import "./styles/detail.css";
+@import "./styles/profile-detail.css";
 @import "./styles/footer.css";
+@import "./styles/login.css";
+@import "./styles/admin.css";
+@import "./styles/add-project.css";

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, forwardRef } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { projects } from '../data/projects'
+import Seo from '../components/common/Seo'
 
 
 const ImagePanel = forwardRef(function ImagePanel(
@@ -259,7 +260,7 @@ export default function ProjectDetailPage() {
   useEffect(() => {
     const t = setTimeout(() => setEntered(true), 40)
     return () => clearTimeout(t)
-  }, [])
+  }, [project])
 
   /* ── Master rAF: momentum + 3D panel fold ─────────────────── */
   useEffect(() => {
@@ -310,7 +311,7 @@ export default function ProjectDetailPage() {
 
     rafRef.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(rafRef.current)
-  }, [])
+  }, [project])
 
   /* ── Scroll sync ──────────────────────────────────────────── */
   useEffect(() => {
@@ -323,7 +324,7 @@ export default function ProjectDetailPage() {
     }
     sc.addEventListener('scroll', onScroll, { passive: true })
     return () => sc.removeEventListener('scroll', onScroll)
-  }, [])
+  }, [project])
 
   /* ── Wheel → momentum ─────────────────────────────────────── */
   useEffect(() => {
@@ -337,7 +338,7 @@ export default function ProjectDetailPage() {
     }
     sc.addEventListener('wheel', onWheel, { passive: false })
     return () => sc.removeEventListener('wheel', onWheel)
-  }, [])
+  }, [project])
 
   /* ── Mouse drag ───────────────────────────────────────────── */
   useEffect(() => {
@@ -384,7 +385,7 @@ export default function ProjectDetailPage() {
       window.removeEventListener('mousemove', onMove)
       window.removeEventListener('mouseup',   onUp)
     }
-  }, [])
+  }, [project])
 
   /* ── Keyboard ─────────────────────────────────────────────── */
   useEffect(() => {
@@ -475,7 +476,7 @@ export default function ProjectDetailPage() {
         el.removeEventListener('mouseleave', onLeave)
       })
     }
-  }, [entered])
+  }, [entered, project])
 
   if (!project) return null
 
@@ -483,10 +484,17 @@ export default function ProjectDetailPage() {
   const nextProject  = projects[(projectIdx + 1) % projects.length]
   const infoParallax = Math.max(0, (0.18 - scrollPct) * 110)
   const totalImages  = project.images.length
-  const hintOpacity  = Math.max(0, 1 - scrollPct * 8)
+  // const hintOpacity  = Math.max(0, 1 - scrollPct * 8)
 
   return (
     <div className={`dp-root${entered ? ' dp-entered' : ''}`}>
+      <Seo
+        title={project.title.replace(/\n/g, ' ')}
+        description={project.description}
+        path={`/project/${encodeURIComponent(project.slug)}`}
+        image={project.coverImage}
+        type="article"
+      />
 
       {/* Custom cursor */}
       <div ref={cursorRef} className="dp-cursor" aria-hidden="true">
@@ -602,7 +610,7 @@ export default function ProjectDetailPage() {
             </button>
 
             <button className="dp-back-btn" onClick={() => navigate('/')}>
-              ↩ Back to work
+              ↩ Quay về trang home
             </button>
           </div>
         </div>
@@ -610,14 +618,13 @@ export default function ProjectDetailPage() {
       </div>
 
       {/* Scroll hint + arrow */}
-      <div
+      {/* <div
         className="dp-scroll-hint"
         style={{ opacity: hintOpacity }}
         aria-hidden="true"
       >
         scroll to explore
-      </div>
-      <ScrollArrow opacity={hintOpacity} />
+      </div> */}
 
     </div>
   )

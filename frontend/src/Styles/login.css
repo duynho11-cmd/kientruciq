@@ -1,0 +1,703 @@
+/* ══════════════════════════════════════════════════════════════
+   Login Page
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Page shell ──────────────────────────────────────────────── */
+.login-page {
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--surface-container-lowest);
+  overflow: hidden;
+  padding: 2rem 1rem;
+}
+
+/* ── Decorative background circles ──────────────────────────── */
+.login-bg-circles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.login-circle {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--outline-variant);
+  opacity: 0.35;
+}
+
+.login-circle--1 {
+  width: 480px;
+  height: 480px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.login-circle--2 {
+  width: 680px;
+  height: 680px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.login-circle--3 {
+  width: 880px;
+  height: 880px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.2;
+}
+
+.login-circle--4 {
+  width: 1080px;
+  height: 1080px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.12;
+}
+
+/* ── Card ────────────────────────────────────────────────────── */
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 340px;
+  animation: fade-up 0.52s var(--ease-out-expo) both;
+}
+
+/* ── Header ──────────────────────────────────────────────────── */
+.login-card__header {
+  text-align: center;
+  margin-bottom: 2.2rem;
+}
+
+.login-card__title {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 4vw, 34px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--on-surface);
+  margin-bottom: 0.45rem;
+}
+
+.login-card__subtitle {
+  font-size: 13.5px;
+  color: var(--on-surface-variant);
+  line-height: 1.5;
+}
+
+/* ── Form ────────────────────────────────────────────────────── */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+/* ── Field ───────────────────────────────────────────────────── */
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.login-field__label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--on-surface-variant);
+  letter-spacing: 0.02em;
+  margin-bottom: 0.3rem;
+}
+
+.login-field__wrap {
+  position: relative;
+}
+
+.login-field__input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--outline-variant);
+  border-radius: 0;
+  padding: 0.55rem 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--on-surface);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.login-field__input::placeholder {
+  color: var(--outline);
+}
+
+.login-field__input:focus {
+  border-bottom-color: var(--primary);
+}
+
+.login-field__input--pw {
+  padding-right: 2.2rem;
+}
+
+.login-field__input--error {
+  border-bottom-color: var(--error);
+}
+
+/* Eye toggle */
+.login-field__eye {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0.2rem;
+  cursor: pointer;
+  color: var(--outline);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.18s;
+}
+
+.login-field__eye:hover {
+  color: var(--on-surface);
+}
+
+/* ── Error message ───────────────────────────────────────────── */
+.login-error {
+  font-size: 12.5px;
+  color: var(--error);
+  margin-top: -0.4rem;
+}
+
+/* ── Remember + Forgot row ───────────────────────────────────── */
+.login-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.15rem;
+}
+
+.login-remember {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 13px;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  user-select: none;
+}
+
+.login-remember input[type='checkbox'] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.login-forgot {
+  font-size: 13px;
+  color: var(--on-surface-variant);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.18s;
+}
+
+.login-forgot:hover {
+  color: var(--on-surface);
+}
+
+/* ── Submit button ───────────────────────────────────────────── */
+.login-submit {
+  width: 100%;
+  padding: 0.78rem 1rem;
+  background: var(--primary);
+  color: var(--on-primary);
+  border: none;
+  border-radius: 3px;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  transition: background 0.2s ease, opacity 0.2s ease;
+  margin-top: 0.3rem;
+}
+
+.login-submit:hover:not(:disabled) {
+  background: var(--on-surface-variant);
+}
+
+.login-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Loading spinner inside button */
+.login-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Divider ─────────────────────────────────────────────────── */
+.login-divider {
+  height: 1px;
+  background: var(--outline-variant);
+  margin: 0.4rem 0 0.1rem;
+}
+
+/* ── Sign up link ────────────────────────────────────────────── */
+.login-signup {
+  text-align: center;
+  font-size: 13px;
+  color: var(--on-surface-variant);
+}
+
+.login-signup__link {
+  color: var(--on-surface);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.18s;
+}
+
+.login-signup__link:hover {
+  color: var(--accent);
+}
+
+/* ── Navbar login button ─────────────────────────────────────── */
+.nav-link--login {
+  padding: 0.3rem 0.85rem !important;
+  border: 1px solid var(--outline-variant);
+  border-radius: 4px;
+  font-size: 13px !important;
+  transition: background 0.18s, border-color 0.18s !important;
+}
+
+.nav-link--login:hover,
+.nav-link--login.active {
+  background: var(--surface-container);
+  border-color: var(--outline);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Register Page
+   ══════════════════════════════════════════════════════════════ */
+
+.register-page {
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--surface-container-lowest);
+  overflow: hidden;
+  padding: 2.5rem 1rem 3rem;
+}
+
+/* Brand name at top */
+.register-brand {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--on-surface);
+  margin-bottom: 2rem;
+}
+
+/* Card with border */
+.register-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 380px;
+  border: 1px solid var(--outline-variant);
+  border-radius: 8px;
+  padding: 2.4rem 2rem;
+  background: var(--surface-container-lowest);
+  animation: fade-up 0.48s var(--ease-out-expo) both;
+}
+
+.register-card__header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.register-card__title {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 3.5vw, 28px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--on-surface);
+  margin-bottom: 0.4rem;
+}
+
+.register-card__subtitle {
+  font-size: 13px;
+  color: var(--on-surface-variant);
+  line-height: 1.5;
+}
+
+/* Form */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+/* Field */
+.register-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.register-field__label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+}
+
+.register-field__wrap {
+  position: relative;
+}
+
+.register-field__input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--outline-variant);
+  border-radius: 0;
+  padding: 0.5rem 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--on-surface);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.register-field__input::placeholder {
+  color: var(--outline);
+  font-size: 13.5px;
+}
+
+.register-field__input:focus {
+  border-bottom-color: var(--primary);
+}
+
+.register-field__input--pw {
+  padding-right: 2.2rem;
+}
+
+.register-field__input--error {
+  border-bottom-color: var(--error);
+}
+
+.register-field__error {
+  font-size: 11.5px;
+  color: var(--error);
+}
+
+/* Eye toggle */
+.register-field__eye {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0.2rem;
+  cursor: pointer;
+  color: var(--outline);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.18s;
+}
+
+.register-field__eye:hover {
+  color: var(--on-surface);
+}
+
+/* Submit */
+.register-submit {
+  width: 100%;
+  padding: 0.78rem 1rem;
+  background: var(--primary);
+  color: var(--on-primary);
+  border: none;
+  border-radius: 3px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  margin-top: 0.5rem;
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.register-submit:hover:not(:disabled) {
+  background: var(--on-surface-variant);
+}
+
+.register-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Sign in link */
+.register-signin {
+  text-align: center;
+  font-size: 13px;
+  color: var(--on-surface-variant);
+}
+
+.register-signin__link {
+  color: var(--on-surface);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.18s;
+}
+
+.register-signin__link:hover {
+  color: var(--accent);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Forgot Password Page
+   ══════════════════════════════════════════════════════════════ */
+
+.forgot-page {
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--surface-container-lowest);
+  overflow: hidden;
+  padding: 2rem 1rem;
+}
+
+.forgot-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 360px;
+  background: var(--surface-container-lowest);
+  padding: 3rem 2.2rem 2.4rem;
+  animation: fade-up 0.48s var(--ease-out-expo) both;
+}
+
+/* Header */
+.forgot-card__header {
+  text-align: center;
+  margin-bottom: 2.2rem;
+}
+
+.forgot-card__title {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 5vw, 40px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--on-surface);
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.forgot-card__subtitle {
+  font-size: 13.5px;
+  color: var(--on-surface-variant);
+  line-height: 1.65;
+  text-align: center;
+}
+
+/* Form */
+.forgot-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+/* Submit button */
+.forgot-submit {
+  width: 100%;
+  padding: 0.82rem 1rem;
+  background: var(--primary);
+  color: var(--on-primary);
+  border: none;
+  border-radius: 3px;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 46px;
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.forgot-submit:hover:not(:disabled) {
+  background: var(--on-surface-variant);
+}
+
+.forgot-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Back link */
+.forgot-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+  text-decoration: none;
+  transition: color 0.18s;
+}
+
+.forgot-back:hover {
+  color: var(--on-surface);
+}
+
+/* Success state */
+.forgot-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  animation: fade-up 0.42s var(--ease-out-expo) both;
+}
+
+.forgot-success__title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--on-surface);
+}
+
+.forgot-success__body {
+  font-size: 13.5px;
+  color: var(--on-surface-variant);
+  line-height: 1.65;
+}
+
+.forgot-success__body strong {
+  color: var(--on-surface);
+  font-weight: 600;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Shared validation styles (Login / Register / Forgot)
+   ══════════════════════════════════════════════════════════════ */
+
+/* Form-level alert (e.g. wrong credentials) */
+.auth-alert {
+  background: rgba(179, 38, 30, 0.07);
+  border: 1px solid rgba(179, 38, 30, 0.25);
+  border-radius: 5px;
+  padding: 0.6rem 0.85rem;
+  font-size: 13px;
+  color: var(--error);
+  line-height: 1.45;
+}
+
+/* Per-field error */
+.auth-field-error {
+  font-size: 11.5px;
+  color: var(--error);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.auth-field-error::before {
+  content: '!';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--error);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* Hint text */
+.auth-field-hint {
+  font-size: 11.5px;
+  color: var(--outline);
+}
+
+/* ── Password strength indicator ─────────────────────────────── */
+.pw-strength {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.35rem;
+}
+
+.pw-strength__bars {
+  display: flex;
+  gap: 3px;
+  flex: 1;
+}
+
+.pw-strength__bar {
+  flex: 1;
+  height: 3px;
+  border-radius: 999px;
+  transition: background 0.3s ease;
+}
+
+.pw-strength__label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  min-width: 60px;
+  text-align: right;
+  transition: color 0.3s ease;
+}

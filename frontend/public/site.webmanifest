@@ -1,0 +1,11 @@
+{
+  "name": "Kiến Trúc IQ",
+  "short_name": "Kiến Trúc IQ",
+  "description": "Thiết kế kiến trúc, nội thất và sân vườn.",
+  "lang": "vi",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faf8f5",
+  "theme_color": "#faf8f5",
+  "icons": [{ "src": "/logo.png", "sizes": "512x512", "type": "image/png" }]
+}

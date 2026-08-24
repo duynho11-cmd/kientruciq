@@ -1,12 +1,18 @@
-import express from "express"
+import './config/env.js'
+import app from './app.js'
+import connectDB from './config/db.js'
 
-const app = express();
+const port = Number(process.env.PORT) || 5001
 
-app.listen(5001, () => {
-    console.log("server bat dau tren cong 5001");
+if (!process.env.MONGODB_URI || !process.env.JWT_SECRET) {
+  console.error('Thiếu biến môi trường MONGODB_URI hoặc JWT_SECRET.')
+  process.exit(1)
+}
 
-});
-
-app.get("/api/tasks", (request, response) => {
-    response.status(200).send("ban co 10 viec can lam");
-});
+try {
+  await connectDB()
+  app.listen(port, () => console.log(`API đang chạy tại http://localhost:${port}`))
+} catch (error) {
+  console.error('Không thể khởi động server:', error.message)
+  process.exit(1)
+}

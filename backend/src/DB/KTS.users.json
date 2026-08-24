@@ -1,0 +1,68 @@
+[{
+  "_id": {
+    "$oid": "6a7b6ee9c117698bf1bdf1ea"
+  },
+  "username": "Duyb",
+  "email": "duyaz0320@gmail.com",
+  "password": "$2b$12$wgLyGPKSqQUqwqYULk7N2OpMCsVnUWOxU1nmDjD0QOyfzKseihhbS",
+  "fullName": "Bui Duc A",
+  "phone": null,
+  "avatar": null,
+  "gender": "other",
+  "dateOfBirth": null,
+  "role": "admin",
+  "status": "active",
+  "isEmailVerified": true,
+  "emailVerificationToken": null,
+  "emailVerificationExpires": null,
+  "resetPasswordToken": null,
+  "resetPasswordExpires": null,
+  "refreshToken": null,
+  "lastLoginAt": {
+    "$date": "2026-08-20T14:18:40.614Z"
+  },
+  "lastLoginIp": "::1",
+  "provider": "local",
+  "providerId": null,
+  "createdAt": {
+    "$date": "2026-08-11T18:50:17.624Z"
+  },
+  "updatedAt": {
+    "$date": "2026-08-20T14:18:40.619Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a8bb67e2bf13de6098d233f"
+  },
+  "username": "TAnh03",
+  "email": "phituananh21hb@gmail.com",
+  "password": "$2b$12$vXqdCFi529XNQlt8JtQBDuoto1gcl6pkAekJkq692j6.n87Ll1g/G",
+  "fullName": "Phi Dinh Tuan Anh",
+  "phone": null,
+  "avatar": null,
+  "gender": "other",
+  "dateOfBirth": null,
+  "role": "admin",
+  "status": "active",
+  "isEmailVerified": true,
+  "emailVerificationToken": null,
+  "emailVerificationExpires": null,
+  "resetPasswordToken": null,
+  "resetPasswordExpires": null,
+  "refreshToken": null,
+  "lastLoginAt": {
+    "$date": "2026-08-24T03:13:12.378Z"
+  },
+  "lastLoginIp": "::1",
+  "provider": "local",
+  "providerId": null,
+  "createdAt": {
+    "$date": "2026-08-24T03:11:58.583Z"
+  },
+  "updatedAt": {
+    "$date": "2026-08-24T03:13:12.386Z"
+  },
+  "__v": 0
+}]

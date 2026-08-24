@@ -284,6 +284,8 @@ export function useWaveCanvas(containerRef, src, active) {
       G.clearColor(0, 0, 0, 1)
       G.clear(G.COLOR_BUFFER_BIT)
 
+      // WebGL method; not a React Hook.
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       G.useProgram(P)
 
       /* Bind position */

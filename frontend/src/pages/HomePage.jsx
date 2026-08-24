@@ -4,9 +4,7 @@ import ProjectCard from '../components/common/ProjectCard'
 import { useMagneticDots } from '../hooks/useMagneticDots'
 import { projects as BASE } from '../data/projects'
 
-/* ══════════════════════════════════════════════════════════════
-   Constants
-   ══════════════════════════════════════════════════════════════ */
+/* Constants */
 const N = BASE.length
 
 const getSlot = () => {
@@ -28,9 +26,7 @@ const FLOAT_CFG = [
 
 const mod = (n, m) => ((n % m) + m) % m
 
-/* ══════════════════════════════════════════════════════════════
-   HomePage
-   ══════════════════════════════════════════════════════════════ */
+/* HomePage */
 export default function HomePage() {
   const navigate = useNavigate()
   const sceneRef = useRef(null)
@@ -51,7 +47,7 @@ export default function HomePage() {
   const [activeIdx, setActiveIdx] = useState(featureStart < 0 ? 0 : featureStart)
   const prevIdxRef = useRef(activeIdx)
 
-  /* ── cursor ──────────────────────────────────────────────── */
+  /*  cursor  */
   const cursorDotRef  = useRef(null)
   const cursorRingRef = useRef(null)
   const mouseRef      = useRef({ x: 0, y: 0, rx: 0, ry: 0 })
@@ -62,11 +58,12 @@ export default function HomePage() {
     active: false, startX: 0, startOff: 0,
     lastX: 0, lastT: 0, lastOff: 0,
   })
+  const didDragRef = useRef(false)   /* true nếu chuột di chuyển > ngưỡng khi kéo */
 
-  /* ── 1. Magnetic dots ─────────────────────────────────────── */
+  /*  1. Magnetic dots  */
   useMagneticDots(dotsRef, 72, 0.42)
 
-  /* ── Apply offset ─────────────────────────────────────────── */
+  /*  Apply offset  */
   const applyOffset = useCallback((off) => {
     const refs  = cardRefs.current
     if (!refs.length) return
@@ -97,54 +94,65 @@ export default function HomePage() {
     }
   }, [])
 
-  /* ── Snap ─────────────────────────────────────────────────── */
+  /*  Snap  */
   const snapToNearest = useCallback((fromOff, initVel = 0) => {
     const SLOT   = slotRef.current
-    const target = Math.round(fromOff / SLOT) * SLOT
-    let off = fromOff, vel = initVel
-    // Higher damping + lower stiffness = softer, more fluid deceleration
-    const STIFFNESS = 0.09, DAMPING = 0.82
+    // Bias target toward the direction of velocity so it feels natural
+    const bias   = initVel * 6
+    const target = Math.round((fromOff + bias) / SLOT) * SLOT
+    const startOff = fromOff
+    const DURATION = 950 // ms
+    let startTime  = null
+
+    // easeOutQuart — decelerates quickly, no overshoot
+    const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4)
 
     cancelAnimationFrame(rafRef.current)
     sceneRef.current?.classList.add('is-transitioning')
 
-    const tick = () => {
-      const dist = target - off
-      vel = vel * DAMPING + dist * STIFFNESS
-      off += vel
+    const tick = (now) => {
+      if (!startTime) startTime = now
+      const elapsed = now - startTime
+      const t = Math.min(elapsed / DURATION, 1)
+      const off = startOff + (target - startOff) * easeOutQuart(t)
       applyOffset(off)
-      if (Math.abs(dist) < 0.15 && Math.abs(vel) < 0.15) {
+      if (t < 1) {
+        rafRef.current = requestAnimationFrame(tick)
+      } else {
         applyOffset(target)
         sceneRef.current?.classList.remove('is-transitioning')
-        return
       }
-      rafRef.current = requestAnimationFrame(tick)
     }
     rafRef.current = requestAnimationFrame(tick)
   }, [applyOffset])
 
-  /* ── Step (wheel) ─────────────────────────────────────────── */
+  /*  Step (wheel) */
   const step = useCallback((dir) => {
     cancelAnimationFrame(rafRef.current)
-    const SLOT   = slotRef.current
-    const from   = offsetRef.current
-    const target = Math.round(from / SLOT) * SLOT - dir * SLOT
-    let off = from, vel = -dir * SLOT * 0.08   // nhỏ hơn nhiều → không nảy
-    const STIFFNESS = 0.06, DAMPING = 0.88     // mềm, tắt dần chậm
+    const SLOT     = slotRef.current
+    const from     = offsetRef.current
+    const target   = Math.round(from / SLOT) * SLOT - dir * SLOT
+    const startOff = from
+    const DURATION = 850 // ms
+    let startTime  = null
+
+    // easeOutCubic — smooth deceleration, no bounce
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3)
 
     sceneRef.current?.classList.add('is-transitioning')
 
-    const tick = () => {
-      const dist = target - off
-      vel = vel * DAMPING + dist * STIFFNESS
-      off += vel
+    const tick = (now) => {
+      if (!startTime) startTime = now
+      const elapsed = now - startTime
+      const t = Math.min(elapsed / DURATION, 1)
+      const off = startOff + (target - startOff) * easeOutCubic(t)
       applyOffset(off)
-      if (Math.abs(dist) < 0.15 && Math.abs(vel) < 0.15) {
+      if (t < 1) {
+        rafRef.current = requestAnimationFrame(tick)
+      } else {
         applyOffset(target)
         sceneRef.current?.classList.remove('is-transitioning')
-        return
       }
-      rafRef.current = requestAnimationFrame(tick)
     }
     rafRef.current = requestAnimationFrame(tick)
   }, [applyOffset])
@@ -186,6 +194,7 @@ export default function HomePage() {
 
     const onStart = (e) => {
       cancelAnimationFrame(rafRef.current)
+      didDragRef.current = false
       dragRef.current = {
         active: true,
         startX: getX(e), startOff: offsetRef.current,
@@ -197,6 +206,7 @@ export default function HomePage() {
       if (!dragRef.current.active) return
       const x  = getX(e)
       const dx = x - dragRef.current.startX
+      if (Math.abs(dx) > 4) didDragRef.current = true
       dragRef.current.lastOff = offsetRef.current
       dragRef.current.lastX   = x
       dragRef.current.lastT   = Date.now()
@@ -347,9 +357,7 @@ export default function HomePage() {
     snapToNearest(cur + delta, 0)
   }, [snapToNearest])
 
-  /* ══════════════════════════════════════════════════════════
-     Render
-     ══════════════════════════════════════════════════════════ */
+  /*Render*/
   return (
     <main ref={mainRef} className="carousel-main">
 
@@ -361,6 +369,26 @@ export default function HomePage() {
 
       {/* Ambient glow */}
       <div className="carousel-ambient" aria-hidden="true" />
+
+      {/* Arrow buttons */}
+      <button
+        className="carousel-arrow carousel-arrow--prev"
+        aria-label="Previous project"
+        onClick={() => step(-1)}
+      >
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
+      <button
+        className="carousel-arrow carousel-arrow--next"
+        aria-label="Next project"
+        onClick={() => step(1)}
+      >
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M7.5 5L12.5 10L7.5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
 
       {/* Scene */}
       <div ref={sceneRef} className="carousel-scene">
@@ -378,6 +406,7 @@ export default function HomePage() {
               isFeature={project.isFeature}
               floatStyle={{ '--float-duration': float.duration, '--float-delay': float.delay }}
               onClick={() => {
+                if (didDragRef.current) return
                 if (isActive) navigate(`/project/${project.slug}`)
                 else goTo(i)
               }}

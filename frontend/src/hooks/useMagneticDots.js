@@ -39,8 +39,6 @@ export function useMagneticDots(containerRef, radius = 60, strength = 0.38) {
     /* Physics tick */
     const tick = () => {
       const { x: mx, y: my } = mouseRef.current
-      let anyActive = false
-
       stateRef.current.forEach((s) => {
         const rect = s.el.getBoundingClientRect()
         const cx   = rect.left + rect.width  / 2
@@ -58,7 +56,6 @@ export function useMagneticDots(containerRef, radius = 60, strength = 0.38) {
           const ease = t * t * (3 - 2 * t)      // smoothstep
           tx = dx * ease * strength
           ty = dy * ease * strength
-          anyActive = true
         }
 
         /* Spring toward target */
@@ -71,7 +68,6 @@ export function useMagneticDots(containerRef, radius = 60, strength = 0.38) {
         const mag = Math.sqrt(s.x * s.x + s.y * s.y)
         if (mag > MIN_DIST || Math.abs(s.vx) > 0.05 || Math.abs(s.vy) > 0.05) {
           s.el.style.transform = `translate(${s.x.toFixed(2)}px, ${s.y.toFixed(2)}px)`
-          anyActive = true
         } else if (s.el.style.transform) {
           s.el.style.transform = ''
         }

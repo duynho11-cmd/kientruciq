@@ -3,41 +3,46 @@
    ══════════════════════════════════════════════════════════════ */
 :root {
   /* ── Surfaces ────────────────────────────────────────────── */
-  --surface:                   #faf8f5;
-  --surface-dim:               #d9d7d4;
+  --surface:                   #fdf9f4;
+  --surface-dim:               #dbd8d2;
   --surface-container-lowest:  #ffffff;
-  --surface-container-low:     #f4f2ef;
-  --surface-container:         #eeedea;
-  --surface-container-high:    #e8e6e3;
-  --surface-container-highest: #e2e0dd;
+  --surface-container-low:     #f7f3ec;
+  --surface-container:         #f0ece4;
+  --surface-container-high:    #e9e4db;
+  --surface-container-highest: #e2ddd4;
 
   /* ── On-surface ──────────────────────────────────────────── */
-  --on-surface:         #181917;
-  --on-surface-variant: #424544;
+  --on-surface:         #1c1a16;
+  --on-surface-variant: #52493c;
 
   /* ── Inverse ─────────────────────────────────────────────── */
-  --inverse-surface:    #2e2f2d;
-  --inverse-on-surface: #f0eeed;
+  --inverse-surface:    #2e2b24;
+  --inverse-on-surface: #f2ede5;
 
   /* ── Outline ─────────────────────────────────────────────── */
-  --outline:         #717575;
-  --outline-variant: #c1c4c4;
+  --outline:         #7a7468;
+  --outline-variant: #c8c2b6;
 
   /* ── Primary ─────────────────────────────────────────────── */
-  --primary:    #181917;
+  --primary:    #1c1a16;
   --on-primary: #ffffff;
 
   /* ── Secondary ───────────────────────────────────────────── */
-  --secondary:           #5c5c5a;
-  --secondary-container: #dfddd9;
+  --secondary:           #6b6256;
+  --secondary-container: #e2ddd4;
 
   /* ── Background ──────────────────────────────────────────── */
-  --background:    #faf8f5;
-  --on-background: #181917;
+  --background:    #fdf9f4;
+  --on-background: #1c1a16;
 
   /* ── Accent ──────────────────────────────────────────────── */
-  --accent:       #c8a882;
-  --accent-light: rgba(200, 168, 130, 0.12);
+  --accent:       #5c7a5f;
+  --accent-hover: #4a6850;
+  --accent-light: rgba(92, 122, 95, 0.10);
+
+  /* ── Gold highlight ──────────────────────────────────────── */
+  --gold:       #b8913a;
+  --gold-light: rgba(184, 145, 58, 0.12);
 
   /* ── Error ───────────────────────────────────────────────── */
   --error: #b3261e;
@@ -83,6 +88,6 @@
   --shadow-2xl:0 40px 80px rgba(0,0,0,0.22);
 
   /* ── Glow (accent-tinted shadows for active card) ────────── */
-  --glow-card: 0 20px 60px rgba(0,0,0,0.14), 0 0 0 1px rgba(200,168,130,0.08);
-  --glow-card-hover: 0 32px 80px rgba(0,0,0,0.2), 0 0 0 1px rgba(200,168,130,0.14);
+  --glow-card:       0 20px 60px rgba(0,0,0,0.13), 0 0 0 1px rgba(92,122,95,0.10);
+  --glow-card-hover: 0 32px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(92,122,95,0.18);
 }
