@@ -137,11 +137,14 @@ function AnimatedRoutes() {
 
 /* ── Main layout (with Navbar + Footer) ─────────────────────── */
 function MainLayout() {
+  const { pathname } = useLocation()
+  const showFooter = pathname !== '/'
+
   return (
     <>
       <Navbar />
       <AnimatedRoutes />
-      <Footer />
+      {showFooter && <Footer />}
       {/* FloatingContact nằm ngoài AnimatedRoutes để tránh bị ảnh hưởng
           bởi transform/filter của page transition wrapper */}
       <FloatingContact />
